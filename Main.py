@@ -1,33 +1,36 @@
 import random
 
-deck_array = ["A","A","A","A","2","2","2","2","3","3","3","3","4","4","4","4","5","5","5","5","6","6","6","6","7","7","7","7","8","8","8","8","9","9","9","9","10","10","10","10","J","J","J","J","Q","Q","Q","Q","K","K","K","K"]
+deck_array = ["A", "A", "A", "A", "2", "2", "2", "2", "3", "3", "3", "3", "4",
+              "4", "4", "4", "5", "5", "5", "5", "6", "6", "6", "6", "7", "7",
+              "7", "7", "8", "8", "8", "8", "9", "9", "9", "9", "10", "10",
+              "10", "10", "J", "J", "J", "J", "Q", "Q", "Q", "Q", "K", "K", "K", "K"]
 player_hand = []
 computer_hand = []
 player_total = 0
 computer_total = 0
 
 
-def shuffledeck(deck_array):
-    deck = deck_array
-    for i in range(len(deck)+1):
-        while(i > 0):
-            i = i * -1
-            randomnumber = random.randint(0,51)
+def shuffledeck(array):
+    deck = array
+    for i in range(len(deck)):
+        while i > 0:
+            i *= -1
+            randomnumber = random.randint(0, 51)
             temp = deck[i]
             deck[i] = deck[randomnumber]
             deck[randomnumber] = temp
+    print(deck)
     return deck
 
 
-def drawcard(deck_array):
-    draw = deck_array[-1]
+def drawcard(array):
+    draw = array[-1]
     return draw
 
 
 def get_total(input_hand):
     print(input_hand)
     sum = 0
-    value = 0
     for i in range(len(input_hand)):
         if str(input_hand[i]) == "A":
             value = 1
@@ -53,28 +56,27 @@ def is_bust(input_hand):
     return busted
 
 
-def dealcards(inputdeck,player_hand,computer_hand):
-    player_hand.append(inputdeck[-1])
+def dealcards(inputdeck, p_hand, c_hand):
+    p_hand.append(inputdeck[-1])
     del inputdeck[-1]
-    computer_hand.append(inputdeck[-1])
+    c_hand.append(inputdeck[-1])
     del inputdeck[-1]
-    player_hand.append(inputdeck[-1])
+    p_hand.append(inputdeck[-1])
     del inputdeck[-1]
-    computer_hand.append(inputdeck[-1])
+    c_hand.append(inputdeck[-1])
     del inputdeck[-1]
     return inputdeck
 
+
 def main():
     shuffledeck(deck_array)
-    dealcards(deck_array,player_hand,computer_hand)
+    dealcards(deck_array, player_hand, computer_hand)
     if is_bust(player_hand) == False:
         print("let's play")
     else:
         print("game over, player busted")
-        #play the game
+        # play the game
     # if the user decides to hit
-
-
 
 
 main()
