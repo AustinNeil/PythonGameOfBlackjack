@@ -139,6 +139,6 @@ def main():
 
 main()
 
-
+# Ace currently is only playable as a 1
 # if a player busts, the other wins automatically
 # add in the option to gamble?
