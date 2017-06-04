@@ -10,93 +10,135 @@ player_total = 0
 computer_total = 0
 
 
-def shuffledeck(array):
+def shuffle_deck(array):
     deck = array
     for i in range(len(deck)):
         while i > 0:
             i *= -1
-            randomnumber = random.randint(0, 51)
+            random_number = random.randint(0, 51)
             temp = deck[i]
-            deck[i] = deck[randomnumber]
-            deck[randomnumber] = temp
-    print(deck)
+            deck[i] = deck[random_number]
+            deck[random_number] = temp
     return deck
 
 
-def drawcard(array):
+def draw_card(array):
     draw = array[-1]
+    del array[-1]
     return draw
 
 
 def get_total(input_hand):
-    print(input_hand)
-    sum = 0
+    total = 0
     for i in range(len(input_hand)):
         if str(input_hand[i]) == "A":
             value = 1
-        elif str(input_hand[i]) == "J":
-            value = 11
-        elif str(input_hand[i]) == "Q":
-            value = 12
-        elif str(input_hand[i]) == "K":
-            value = 13
+        elif str(input_hand[i]) == "J" or str(input_hand[i]) == "Q" or str(input_hand[i]) == "K":
+            value = 10
         else:
             value = int(input_hand[i])
-        sum += value
-    print("The total of the hand is at " + str(sum))
-    return sum
+        total += value
+    return total
 
 
 def is_bust(input_hand):
-    sum = get_total(input_hand)
-    busted = False
-    if sum > 21:
+    total = get_total(input_hand)
+    if total > 21:
+        print(input_hand)
         print("The hand is a bust")
         busted = True
+        # End Round Here
+    else:
+        busted = False
     return busted
 
 
-def dealcards(inputdeck, p_hand, c_hand):
-    p_hand.append(inputdeck[-1])
-    del inputdeck[-1]
-    c_hand.append(inputdeck[-1])
-    del inputdeck[-1]
-    p_hand.append(inputdeck[-1])
-    del inputdeck[-1]
-    c_hand.append(inputdeck[-1])
-    del inputdeck[-1]
-    return inputdeck
+def deal_cards(input_deck, p_hand, c_hand):
+    p_hand.append(input_deck[-1])
+    del input_deck[-1]
+    c_hand.append(input_deck[-1])
+    del input_deck[-1]
+    p_hand.append(input_deck[-1])
+    del input_deck[-1]
+    c_hand.append(input_deck[-1])
+    del input_deck[-1]
+    if is_bust(p_hand):
+        return "game over"
+    return input_deck
+
+
+def play_dealer_hand(d_hand, deck):
+    total = get_total(d_hand)
+    print("The dealer's hand is: " + str(d_hand))
+    print("The total of his hand is " + str(total))
+    is_bust(d_hand)
+    if total < 17:
+        d_hand.append(draw_card(deck))
+        total = get_total(d_hand)
+        print("The dealer drew a " + str(d_hand[-1]))
+        print("The dealer's hand is: " + str(d_hand))
+        is_bust(d_hand)
+        print("The total of his hand is " + str(total))
+        if total < 17:
+            d_hand.append(draw_card(deck))
+            total = get_total(d_hand)
+            print("The dealer drew a " + str(d_hand[-1]))
+            print("The dealer's hand is: " + str(d_hand))
+            is_bust(d_hand)
+            print("The total of his hand is " + str(total))
+            if total < 17:
+                total = get_total(d_hand)
+                print("The dealer drew a " + str(d_hand[-1]))
+                print("The dealer's hand is: " + str(d_hand))
+                is_bust(d_hand)
+                print("The total of his hand is " + str(total))
+
+
+def hand_options(array, hand, comp_hand):
+    total = get_total(hand)
+    print("Your hand is: " + str(hand))
+    print("The total of your hand is at " + str(total))
+    print("You can press 'h' to Hit and get another card")
+    print("Or you can press 's' to Stay and turn it over to the dealer")
+    choice = input("What would you like to do?")
+    if choice == "h":
+        hand.append(draw_card(array))
+    else:
+        print("You chose to stay where you are with a total of: " + str(total))
+        print("Time for the dealer to go...")
+        play_dealer_hand(comp_hand, array)
+    return str(choice)
 
 
 def main():
-    shuffledeck(deck_array)
-    dealcards(deck_array, player_hand, computer_hand)
-    if is_bust(player_hand) == False:
-        print("let's play")
-    else:
-        print("game over, player busted")
-        # play the game
-    # if the user decides to hit
-
+    shuffle_deck(deck_array)
+    deal_cards(deck_array, player_hand, computer_hand)
+    if is_bust(player_hand):
+        return "game over"
+    choice = hand_options(deck_array, player_hand, computer_hand)
+    if is_bust(player_hand):
+        return "game over"
+    if choice == "h":
+        choice = hand_options(deck_array, player_hand, computer_hand)
+        if is_bust(player_hand):
+            return "game over"
+        if choice == "h":
+            if is_bust(player_hand):
+                return "game over"
+    # Check the scores and figure out the winner
+    p_total = get_total(player_hand)
+    c_total = get_total(computer_hand)
+    if p_total > c_total:
+        print("You won!")
+        print("Your hand total was " + str(p_total))
+        print("The computer total was " + str(c_total))
+    if c_total > p_total:
+        print("You lost!")
+        print("Your hand total was " + str(p_total))
+        print("The computer total was " + str(c_total))
 
 main()
 
 
-# Create a deck of 52 cards
-    # shuffle the deck
-    # deal cards
-    # display total for the player
-    # Give the player their options
-    # Player chooses an option
-        # Hit or Stay
-        # if Hit
-            # Draw card
-            # Recalculate the total
-            # check for bust
-            # player chooses an option...
-        # if stay
-            # Turn goes to Computer for auto playing their side
-            # lookup dealer rules for when the dealer is and isn't forced to hit
-    # determine the winner if neither player busts
-    # if a player busts, the other wins automatically
-    # add in the option to gamble?
+# if a player busts, the other wins automatically
+# add in the option to gamble?
